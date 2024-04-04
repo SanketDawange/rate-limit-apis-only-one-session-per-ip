@@ -16,9 +16,12 @@ class ApiController extends Controller
     {
         $ip = $request->ip();
 
+        // Close all other sessions
         DB::table('sessions')->where('ip_address', $ip)->where('id', '!=', $request->session()->getId())->update(['status' => 'closed']);
+
+        // Mark current session as active
         DB::table('sessions')->where('id', $request->session()->getId())->update(['status' => 'active']);
 
-        return response()->json(['message' => 'Closed previous session.']);
+        return response()->json(['message' => 'Closed other session.']);
     }
 }

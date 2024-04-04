@@ -41,6 +41,34 @@
                     }
                     $('#statusMessage').html('<div class="alert alert-danger" role="alert">Error: ' +
                         errorMessage + '</div>').show();
+
+                    if (xhr.status === 429) {
+                        $('#statusMessage').append(
+                            '<button id="continueSessionBtn" class="btn btn-primary">Continue Current Session</button>'
+                        );
+                        $('#continueSessionBtn').click(function() {
+                            $.ajax({
+                                url: xhr.responseJSON.continue_session_url,
+                                type: 'GET',
+                                success: function(response) {
+                                    $('#statusMessage').html(
+                                        '<div class="alert alert-info" role="alert">' +
+                                        response.message + '</div>').show();
+                                },
+                                error: function(xhr, status, error) {
+                                    var errorMessage = xhr.status + ': ' + xhr
+                                        .statusText;
+                                    if (xhr.responseJSON && xhr.responseJSON
+                                        .error) {
+                                        errorMessage = xhr.responseJSON.error;
+                                    }
+                                    $('#statusMessage').html(
+                                        '<div class="alert alert-danger" role="alert">Error: ' +
+                                        errorMessage + '</div>').show();
+                                }
+                            });
+                        });
+                    }
                 }
             });
         });

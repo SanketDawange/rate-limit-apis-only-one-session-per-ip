@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
-            $table->enum('status', ['active', 'closed'])->default('active'); 
+            $table->enum('status', ['active', 'closed', 'new'])->default('new');
         });
     }
 

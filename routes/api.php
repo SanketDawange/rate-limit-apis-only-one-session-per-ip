@@ -14,7 +14,7 @@ use App\Http\Middleware\LimitSessionPerIp;
 |
 */
 
-
+// Close previous sessions (by-pass LimitSessionPerIp middleware)
 Route::get('continue-session', [ApiController::class, 'continueSession'])->name('continue-session') ->middleware('web');
 
 Route::group(['middleware' => ['web', LimitSessionPerIp::class]], function () {
