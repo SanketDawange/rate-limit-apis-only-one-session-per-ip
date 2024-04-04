@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Session;
 
 class ApiController extends Controller
 {
@@ -17,7 +16,8 @@ class ApiController extends Controller
     {
         $ip = $request->ip();
 
-        DB::table('sessions')->where('ip_address', $ip)->where('id', '!=', $request->session()->getId())->delete();
+        DB::table('sessions')->where('ip_address', $ip)->where('id', '!=', $request->session()->getId())->update(['status' => 'closed']);
+        DB::table('sessions')->where('id', $request->session()->getId())->update(['status' => 'active']);
 
         return response()->json(['message' => 'Closed previous session.']);
     }

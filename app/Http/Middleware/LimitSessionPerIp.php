@@ -17,9 +17,13 @@ class LimitSessionPerIp
 
         if (DB::table('sessions')->where('ip_address', $ip)->exists()) {
 
-            if (Session::get($key) != $sessionID) {
+            if (DB::table('sessions')->where('id', $sessionID)->where('status', 'closed')->exists()) {
+                logger("this IP " . $ip . " already has a session but it has been closed");
+                return response()->json(['error' => 'Your session has been closed'], 403);
+            }
+            if (Session::get($key) != $sessionID && DB::table('sessions')->where('id','!=', $sessionID)->where('status', 'active')->exists()) {
                 logger("this IP " . $ip . " already has a session current request is from another session but IP exists");
-                return response()->json(['error' => 'Previous session in progress', 'url' => route('continue-session') ], 429);
+                return response()->json(['error' => 'Another session in progress', 'continue_session_url' => route('continue-session')], 429);
             } else {
                 logger("this IP " . $ip . " already has a session new request from same session");
                 return $next($request);
